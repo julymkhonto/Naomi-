@@ -246,6 +246,7 @@
                     <a href="#" class="btn" onclick="alert('This would link to the live demo!')">View Live Demo</a>
                     <a href="#" class="btn btn-secondary" onclick="alert('This would open the GitHub repo!')">GitHub</a>
                 </div>
+                <a href="your-audio-file.mp3" download>Download Audio Track</a>
                 
                 <div class="project-card">
                     <h3>Project Two</h3>
