@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Overlay</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background: transparent !important;
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        .video-container {
+            background: #000;
+        }
+        .overlay {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white overflow-hidden">
+    <div class="flex h-screen">
+        <!-- Main Video Area -->
+        <div class="flex-1 flex flex-col">
+            <div class="flex-1 relative video-container">
+                <video id="live-video" 
+                       class="w-full h-full object-cover"
+                       autoplay muted loop controls>
+                    <source src="https://test-streams.mux.dev/x264_720p_1500kbps_30fps.mp4" type="video/mp4">
+                </video>
+                
+                <!-- Live Badge -->
+                <div class="absolute top-6 left-6 bg-red-600 text-white text-sm font-bold px-4 py-1 rounded-full flex items-center gap-2 shadow-lg">
+                    <div class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                    LIVE
+                </div>
+                
+                <!-- Stream Title -->
+                <div class="absolute bottom-6 left-6 overlay text-white px-6 py-4 rounded-2xl max-w-lg">
+                    <div class="font-semibold text-xl">Cyberpunk 2077 - Night City Run</div>
+                    <div class="text-zinc-300">@neonracer42 • <span id="viewers">14,892</span> watching</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar (Chat + Info) -->
+        <div class="w-96 bg-black/80 backdrop-blur-md flex flex-col border-l border-white/10">
+            <!-- Header -->
+            <div class="p-4 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="text-red-500">
+                        <i class="fas fa-broadcast-tower text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold">LiveHub</div>
+                        <div class="text-xs text-emerald-400">Streaming now</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat -->
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto text-sm space-y-4">
+                <!-- JS will fill this -->
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t border-white/10">
+                <input id="chat-input" 
+                       type="text" 
+                       class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-red-500"
+                       placeholder="Type a message...">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Viewer counter
+        let viewers = 14892;
+        setInterval(() => {
+            viewers += Math.floor(Math.random() * 12) + 5;
+            document.getElementById('viewers').textContent = viewers.toLocaleString();
+        }, 6000);
+
+        // Fake chat
+        const messages = [
+            {user: "pixelninja", msg: "This graphics are insane 🔥"},
+            {user: "bytebandit", msg: "How are you drifting like that?!"},
+            {user: "vaporwave88", msg: "Song name pls 🙏"}
+        ];
+
+        function addMessage() {
+            const chat = document.getElementById('chat-messages');
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            chat.innerHTML += `
+                <div class="flex gap-2">
+                    <span class="text-blue-400 font-medium">@${msg.user}</span>
+                    <span class="text-zinc-200">${msg.msg}</span>
+                </div>`;
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // Auto chat messages
+        setInterval(addMessage, 4500);
+
+        // Chat input
+        document.getElementById('chat-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const chat = document.getElementById('chat-messages');
+                chat.innerHTML += `<div class="text-right text-emerald-400">You: ${this.value}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                this.value = '';
+            }
+        });
+
+        // Auto play video
+        window.onload = () => {
+            const video = document.getElementById('live-video');
+            video.play().catch(() => {});
+            addMessage();
+        };
+    </script>
+</body>
+</html>
